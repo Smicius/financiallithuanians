@@ -1,0 +1,106 @@
+:root {
+  --text: #1a1a1a;
+  --muted: #666;
+  --bg: #ffffff;
+  --accent: #111;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, sans-serif;
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 20px;
+  line-height: 1.65;
+}
+
+h1, h2, h3 {
+  font-family: Merriweather, serif;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+}
+
+p {
+  margin-bottom: 1.2rem;
+  color: var(--text);
+}
+
+textarea {
+  width: 100%;
+  min-height: 280px;
+  padding: 14px;
+  font-family: Inter, monospace;
+  font-size: 0.95rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+button {
+  margin-top: 16px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#result {
+  margin-top: 28px;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+table {
+  border-collapse: collapse;   /* remove double borders */
+  width: 100%;                 /* optional, full width */
+}
+
+table th, table td {
+  border: 1px solid black;     /* cell borders */
+  padding: 8px;                /* spacing inside cells */
+  text-align: left;            /* alignment */
+}
+
+table th {
+  background-color: #f2f2f2;   /* header background */
+}
+
+/* Optional: zebra stripes */
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Optional: hover highlight */
+table tr:hover {
+  background-color: #e6f7ff;
+}
+
+.horizontal {
+  display: flex;
+  gap: 10px; /* tarpai tarp elementų */
+}
+
+input {
+  height: 30px;           /* same height for all inputs */
+  line-height: 1.2;       /* optional, better text alignment */
+  padding: 4px 8px;       /* uniform padding */
+  box-sizing: border-box; /* include padding in height */
+  vertical-align: middle; /* align with text/other inline elements */
+}
+
+input[type="file"] {
+  height: 30px;           /* match number input */
+}

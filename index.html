@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="lt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>XIRR skaičiuoklė</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Merriweather:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <h2>II-os pensijų pakopos XIRR skaičiuoklė</h2>
+    <div class="horizontal">
+        <h7>Dabartinė portfelio vertė (€): </h7><input type="number" id="currentPortfolio" step="0.01">
+    </div>
+    <div class="horizontal">
+        <h7>"Sodros" įmokų ataskaita (HTML): </h7><input type="file" id="htmlFile" accept=".html">
+    </div>
+
+    <div class="result" id="fundXirr"></div>
+    <div class="result" id="dalyvioImokuXirr"></div>
+    <table id="imokos"></table>
+
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
