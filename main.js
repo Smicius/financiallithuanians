@@ -22,11 +22,11 @@ fileInput.addEventListener('change', async (event) => {
 
     const fundRateOfReturn = XirrCalculator.calculate(cashflows, new CashFlowEntry(today, parseFloat(portfolioValueInput.value), Currency.EUR));
     const fundRateStr = (fundRateOfReturn * 100).toFixed(2) + " %"
-    fundXirrField.textContent = "Fondo XIRR = " + fundRateStr;
+    fundXirrField.textContent = "Fondo vidutinė metinė grąža (IRR) = " + fundRateStr;
 
     const dalyvioImokuRateOfReturn = XirrCalculator.calculate(cashflows.map(cashflow => cashflow.dalyvioImoka), new CashFlowEntry(today, parseFloat(portfolioValueInput.value), Currency.EUR));
     const dalyvioImokuStr = (dalyvioImokuRateOfReturn * 100).toFixed(2) + " %";
-    dalyvioImokuXirrField.textContent = "XIRR nuo jūsų įmokų = " + dalyvioImokuStr;
+    dalyvioImokuXirrField.textContent = "Vidutinė metinė grąža nuo jūsų įmokų (IRR) = " + dalyvioImokuStr;
 
     while (imokosField.rows.length > 0)
         imokosField.deleteRow(0);
