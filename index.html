@@ -6,7 +6,9 @@
     <title>Vidutinės metinės grąžos skaičiuoklė (II-a pensijų pakopa)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/style.css" rel="stylesheet">
-    <script src="components/fileInput.js"></script>
+
+    <script type="module" src="./components/cashFlowEntryInput.js"></script>
+    <script src="./components/fileInput.js"></script>
 </head>
 
 <body class="container py-4">
@@ -15,18 +17,7 @@
         II-os pensijų pakopos vidutinės metinės grąžos (IRR) skaičiuoklė
     </h2>
 
-    <div class="row mb-3 align-items-center">
-        <div class="col-md-4">
-            <label class="form-label">Dabartinė portfelio vertė</label>
-        </div>
-        <div class="col-md-4">
-            <div class="input-group">
-                <input type="number" id="currentPortfolio" step="any" class="form-control">
-                <span class="input-group-text">€</span>
-            </div>
-        </div>
-    </div>
-
+    <cash-flow-entry-input id="currentPortfolio" label="Dabartinė portfelio vertė"></cash-flow-entry-input>
     <file-input id="htmlFile" accept=".html" label="„Sodros“ įmokų ataskaita" file-extension="HTML"></file-input>
 
     <div class="mt-4">

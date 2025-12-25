@@ -21,6 +21,7 @@ class FileInput extends HTMLElement {
                     <label class="form-control btn btn-secondary">
                         <span id="placeholder">${noFilePlaceholder}</span>
                         <input type="file" accept="${accepts}" class="form-control" hidden>
+                        <div id="error" class="invalid-feedback"></div>
                     </label>
                     <span class="input-group-text">${inputLabel}</span>
                 </div>
@@ -29,6 +30,7 @@ class FileInput extends HTMLElement {
 
         this.placeholder = this.shadowRoot.getElementById('placeholder');
         this.input = this.shadowRoot.querySelector('input');
+        this.error = this.shadowRoot.getElementById('error');
 
         this.input.addEventListener('change', () => {
             this.placeholder.textContent = this.input.files.length ? this.input.files[0].name : noFilePlaceholder;
@@ -41,6 +43,19 @@ class FileInput extends HTMLElement {
 
     getFile() {
         return this.input.files[0] ?? null;
+    }
+
+    isValid() {
+        return this.input.files.length > 0;
+    }
+
+    showError(message) {
+        this.error.textContent = message;
+        this.input.classList.add("is-invalid");
+    }
+
+    clearError() {
+        this.input.classList.remove("is-invalid");
     }
 }
 customElements.define('file-input', FileInput);

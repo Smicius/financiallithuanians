@@ -9,9 +9,9 @@ const fundXirrField = document.getElementById('fundXirr');
 const dalyvioImokuXirrField = document.getElementById('dalyvioImokuXirr');
 const imokosField = document.getElementById('imokos');
 
-fileInput.addEventListener('change', async (event) => {
-    const file = fileInput.getFile();
-    const cashflows = await Imoka2Pakopa.import(file);
+function doStuff(cashflows, portfolioValue) {
+    if (cashflows == null || portfolioValue == null)
+        return;
 
     cashflows.forEach(cashflow => {
         cashflow.convertTo(Currency.EUR);
@@ -20,11 +20,11 @@ fileInput.addEventListener('change', async (event) => {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const fundRateOfReturn = XirrCalculator.calculate(cashflows, new CashFlowEntry(today, parseFloat(portfolioValueInput.value), Currency.EUR));
+    const fundRateOfReturn = XirrCalculator.calculate(cashflows, portfolioValue);
     const fundRateStr = (fundRateOfReturn * 100).toFixed(2) + " %"
     fundXirrField.textContent = "Fondo vidutinė metinė grąža (IRR) = " + fundRateStr;
 
-    const dalyvioImokuRateOfReturn = XirrCalculator.calculate(cashflows.map(cashflow => cashflow.dalyvioImoka), new CashFlowEntry(today, parseFloat(portfolioValueInput.value), Currency.EUR));
+    const dalyvioImokuRateOfReturn = XirrCalculator.calculate(cashflows.map(cashflow => cashflow.dalyvioImoka), portfolioValue);
     const dalyvioImokuStr = (dalyvioImokuRateOfReturn * 100).toFixed(2) + " %";
     dalyvioImokuXirrField.textContent = "Vidutinė metinė grąža nuo jūsų įmokų (IRR) = " + dalyvioImokuStr;
 
@@ -75,4 +75,31 @@ fileInput.addEventListener('change', async (event) => {
     sumRow.insertCell().textContent = new CashFlowEntry(today, valstybesPaskataSum, Currency.EUR).getAmountDisplayValue();
     sumRow.insertCell().textContent = new CashFlowEntry(today, fondoImokaSum, Currency.EUR).getAmountDisplayValue();
     sumRow.insertCell().textContent = sumRow.insertCell().textContent = XirrCalculator.calculateWithRate(cashflows, today, fundRateOfReturn).getAmountDisplayValue();
+}
+
+let portfolioValue = null, cashflows = null;
+portfolioValueInput.addEventListener('change', async (event) => {
+    try {
+        portfolioValue = portfolioValueInput.getCashFlowEntry();
+        if (portfolioValue.amount < 0)
+            throw new Error("Portfelio vertė turi būti didesnė, nei 0!");
+        portfolioValueInput.clearError();
+
+        doStuff(cashflows, portfolioValue);
+    } catch (exception) {
+        portfolioValueInput.showError(exception);
+    }
+
+});
+
+fileInput.addEventListener('change', async (event) => {
+    try {
+        const file = fileInput.getFile();
+        cashflows = await Imoka2Pakopa.import(file);
+        fileInput.clearError();
+
+        doStuff(cashflows, portfolioValue);
+    } catch (exception) {
+        fileInput.showError("Nepavyko perskaityti failo struktūros!");
+    }
 });

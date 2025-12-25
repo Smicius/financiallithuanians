@@ -3,7 +3,8 @@ import { CashFlowEntry } from "../cashFlowEntry.js";
 export class XirrCalculator {
     static calculate(cashFlowEntries, currentValue) {
         let rate = 0.1;
-        let rateChange = 0.1;
+        let rateChange = 0.08;
+        let iterationsLeft = 128;
         let lastDirection = null;
         const eps = 1e-7;
 
@@ -12,9 +13,14 @@ export class XirrCalculator {
             portfolioValue = this.calculateWithRate(cashFlowEntries, currentValue.date, rate);
 
             if (portfolioValue.amount > currentValue.amount) {
-                rate -= rateChange;
-                if (lastDirection != null)
-                    rateChange *= lastDirection > 0 ? 0.5 : 2;
+                if (rate - rateChange < -1) {
+                    rate = -1;
+                    rateChange = 0.08;
+                } else {
+                    rate = rate - rateChange;
+                    if (lastDirection != null)
+                        rateChange *= lastDirection > 0 || rate - rateChange * 2 < -1 ? 0.5 : 2;
+                }
                 lastDirection = -1;
             } else {
                 rate += rateChange;
@@ -22,8 +28,8 @@ export class XirrCalculator {
                     rateChange *= lastDirection > 0 ? 2 : 0.5;
                 lastDirection = 1;
             }
-
-        } while (Math.abs(portfolioValue.amount - currentValue.amount) > eps);
+            iterationsLeft--;
+        } while (iterationsLeft > 0 && Math.abs(portfolioValue.amount - currentValue.amount) > eps);
         return rate;
     }
 
