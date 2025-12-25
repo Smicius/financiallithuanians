@@ -10,7 +10,7 @@ const dalyvioImokuXirrField = document.getElementById('dalyvioImokuXirr');
 const imokosField = document.getElementById('imokos');
 
 fileInput.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
+    const file = fileInput.getFile();
     const cashflows = await Imoka2Pakopa.import(file);
 
     cashflows.forEach(cashflow => {
