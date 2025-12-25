@@ -1,31 +1,45 @@
 <!DOCTYPE html>
-<html lang="lt">
+<html lang="lt" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <title>Vidutinės metinės grąžos skaičiuoklė (II-a pensijų pakopa)</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Merriweather:wght@400;700&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet">
 </head>
 
-<body>
-    <h2>II-os pensijų pakopos vidutinės metinės grąžos (IRR) skaičiuoklė</h2>
-    <div class="horizontal">
-        <h7>Dabartinė portfelio vertė (€): </h7><input type="number" id="currentPortfolio" step="0.01">
-    </div>
-    <div class="horizontal">
-        <h7>"Sodros" įmokų ataskaita (HTML): </h7><input type="file" id="htmlFile" accept=".html">
+<body class="container py-4">
+
+    <h2 class="mb-4">
+        II-os pensijų pakopos vidutinės metinės grąžos (IRR) skaičiuoklė
+    </h2>
+
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-4">
+            <label class="form-label">Dabartinė portfelio vertė (€)</label>
+        </div>
+        <div class="col-md-4">
+            <input type="number" id="currentPortfolio" step="0.01" class="form-control">
+        </div>
     </div>
 
-    <div class="result" id="fundXirr"></div>
-    <div class="result" id="dalyvioImokuXirr"></div>
-    <table id="imokos"></table>
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-4">
+            <label class="form-label">„Sodros“ įmokų ataskaita (HTML)</label>
+        </div>
+        <div class="col-md-4">
+            <input type="file" id="htmlFile" accept=".html" class="form-control">
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div id="fundXirr" class="fw-bold mb-2"></div>
+        <div id="dalyvioImokuXirr" class="fw-bold mb-3"></div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="imokos" class="table table-striped table-bordered"></table>
+    </div>
 
     <script type="module" src="main.js"></script>
 </body>

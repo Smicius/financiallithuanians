@@ -31,17 +31,21 @@ fileInput.addEventListener('change', async (event) => {
     while (imokosField.rows.length > 0)
         imokosField.deleteRow(0);
 
-    const header = document.createElement('tr');
-    header.style.fontWeight = 'bold';
+    const headerRow = document.createElement('tr');
+    headerRow.style.fontWeight = 'bold';
+    const header = document.createElement('thead');
+    header.appendChild(headerRow);
     imokosField.appendChild(header);
-    header.insertCell().textContent = "Data";
-    header.insertCell().textContent = "Dalyvio įmoka";
-    header.insertCell().textContent = "Sodros įmoka";
-    header.insertCell().textContent = "Valstybės paskata";
-    header.insertCell().textContent = "Įmokėta į fondą";
-    header.insertCell().textContent = "Fondo vertė šiandien nuo pilnos įmokos su " + fundRateStr + " grąža";
-    header.insertCell().textContent = "Fondo vertė šiandien nuo dalyvio įmokos su " + dalyvioImokuStr + " grąža";
+    headerRow.insertCell().textContent = "Data";
+    headerRow.insertCell().textContent = "Dalyvio įmoka";
+    headerRow.insertCell().textContent = "Sodros įmoka";
+    headerRow.insertCell().textContent = "Valstybės paskata";
+    headerRow.insertCell().textContent = "Įmokėta į fondą";
+    headerRow.insertCell().textContent = "Fondo vertė šiandien nuo pilnos įmokos su " + fundRateStr + " grąža";
+    headerRow.insertCell().textContent = "Fondo vertė šiandien nuo dalyvio įmokos su " + dalyvioImokuStr + " grąža";
 
+    const body = document.createElement('tbody');
+    imokosField.appendChild(body);
     let dalyvioImokaSum = 0;
     let sodrosImokaSum = 0;
     let valstybesPaskataSum = 0;
@@ -52,7 +56,7 @@ fileInput.addEventListener('change', async (event) => {
         valstybesPaskataSum += cashflow.valstybesPaskata.amount;
         fondoImokaSum += cashflow.amount;
 
-        const row = imokosField.insertRow();
+        const row = body.insertRow();
         row.insertCell().textContent = cashflow.date.toLocaleDateString();
         row.insertCell().textContent = cashflow.dalyvioImoka.getAmountDisplayValue();
         row.insertCell().textContent = cashflow.sodrosImoka.getAmountDisplayValue();
@@ -64,7 +68,7 @@ fileInput.addEventListener('change', async (event) => {
 
     const sumRow = document.createElement('tr');
     sumRow.style.fontWeight = 'bold';
-    imokosField.appendChild(sumRow);
+    body.appendChild(sumRow);
     sumRow.insertCell();
     sumRow.insertCell().textContent = new CashFlowEntry(today, dalyvioImokaSum, Currency.EUR).getAmountDisplayValue();
     sumRow.insertCell().textContent = new CashFlowEntry(today, sodrosImokaSum, Currency.EUR).getAmountDisplayValue();
