@@ -1,6 +1,12 @@
 import { CashFlowEntry } from "../cashFlowEntry.js";
+import { CashFlowSet } from "../cashFlowSet.js";
 
 export class XirrCalculator {
+    /**
+     * @param {CashFlowSet} cashFlowSet
+     * @param {CashFlowEntry} currentValue
+     * @returns {number}
+     */
     static calculate(cashFlowSet, currentValue) {
         const eps = 1e-10;
         const maxIter = 128;
@@ -40,6 +46,12 @@ export class XirrCalculator {
         return mid;
     }
 
+    /**
+     * @param {CashFlowSet} cashFlowSet
+     * @param {Date} date
+     * @param {number} rate
+     * @returns {CashFlowSet}
+     */
     static calculateWithRate(cashFlowSet, date, rate) {
         let sum = 0;
         const msPerYear = 24 * 60 * 60 * 1000 * 365.25;
