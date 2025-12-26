@@ -91,11 +91,11 @@ portfolioValueInput.addEventListener('change', async (event) => {
         if (portfolioValue.amount < 0 || isNaN(portfolioValue.amount))
             throw new Error(`Reikšmė turi būti tarp (0; ${Number.MAX_VALUE}) €!`);
         portfolioValueInput.clearError();
+
+        doStuff(cashflows, portfolioValue);
     } catch (exception) {
         portfolioValueInput.showError(exception);
     }
-
-    doStuff(cashflows, portfolioValue);
 });
 
 fileInput.addEventListener('change', async (event) => {
@@ -103,9 +103,9 @@ fileInput.addEventListener('change', async (event) => {
         const file = fileInput.getFile();
         cashflows = await Imoka2Pakopa.import(file);
         fileInput.clearError();
+
+        doStuff(cashflows, portfolioValue);
     } catch (exception) {
         fileInput.showError("Nepavyko perskaityti failo struktūros!");
     }
-
-    doStuff(cashflows, portfolioValue);
 });
