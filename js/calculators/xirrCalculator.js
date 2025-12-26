@@ -1,12 +1,12 @@
 import { CashFlowEntry } from "../cashFlowEntry.js";
 
 export class XirrCalculator {
-    static calculate(cashFlowEntries, currentValue) {
+    static calculate(cashFlowSet, currentValue) {
         const eps = 1e-10;
         const maxIter = 128;
 
         const f = (rate) =>
-            this.calculateWithRate(cashFlowEntries, currentValue.date, rate).amount / currentValue.amount - 1;
+            this.calculateWithRate(cashFlowSet, currentValue.date, rate).amount / currentValue.amount - 1;
 
         let low = -0.9999999999999999;
         let high = 1;
@@ -40,15 +40,15 @@ export class XirrCalculator {
         return mid;
     }
 
-    static calculateWithRate(cashFlowEntries, date, rate) {
+    static calculateWithRate(cashFlowSet, date, rate) {
         let sum = 0;
         const msPerYear = 24 * 60 * 60 * 1000 * 365.25;
 
-        cashFlowEntries.forEach(cashFlowEntry => {
+        cashFlowSet.cashflows.forEach(cashFlowEntry => {
             const time = (date - cashFlowEntry.date) / msPerYear;
             const timePower = Math.pow(1 + rate, time);
             sum += cashFlowEntry.amount * timePower;
         });
-        return new CashFlowEntry(date, sum, cashFlowEntries[0].currency);
+        return new CashFlowEntry(date, sum, cashFlowSet.cashflows[0].currency);
     }
 }

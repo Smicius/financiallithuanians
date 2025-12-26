@@ -1,5 +1,6 @@
 import { PDFParse } from 'https://cdn.jsdelivr.net/npm/pdf-parse@latest/dist/pdf-parse/web/pdf-parse.es.js';
 import { CashFlowEntry } from '../../cashFlowEntry.js';
+import { CashFlowSet } from '../../cashFlowSet.js';
 import { Currency } from '../../currency.js';
 
 PDFParse.setWorker('https://cdn.jsdelivr.net/npm/pdf-parse@latest/dist/pdf-parse/web/pdf.worker.mjs');
@@ -47,7 +48,7 @@ export class Imoka2Pakopa extends CashFlowEntry {
                 cashFlowEntries.push(imoka2Pakopa);
             }
         }
-        return cashFlowEntries;
+        return new CashFlowSet(cashFlowEntries);
     }
 
     static async getMainTable(fileText) {

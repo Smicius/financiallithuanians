@@ -1,6 +1,7 @@
 import { Imoka2Pakopa } from "./js/parsers/sodra/imoka2Pakopa.js";
 import { XirrCalculator } from "./js/calculators/xirrCalculator.js";
 import { CashFlowEntry } from "./js/cashFlowEntry.js";
+import { CashFlowSet } from '../js/cashFlowSet.js';
 import { Currency } from "./js/currency.js";
 
 const portfolioValueInput = document.getElementById('currentPortfolio');
@@ -10,23 +11,21 @@ const fundXirrField = document.getElementById('fundXirr');
 const dalyvioImokuXirrField = document.getElementById('dalyvioImokuXirr');
 const imokosField = document.getElementById('imokos');
 
-function doStuff(cashflows, portfolioValue) {
+function doStuff(cashflowSet, portfolioValue) {
     try {
-        if (cashflows == null || portfolioValue == null)
+        if (cashflowSet == null || portfolioValue == null)
             return;
 
-        cashflows.forEach(cashflow => {
-            cashflow.convertTo(Currency.EUR);
-        });
+        cashflowSet.changeCurrencyTo(Currency.EUR);
 
         var today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const fundRateOfReturn = XirrCalculator.calculate(cashflows, portfolioValue);
+        const fundRateOfReturn = XirrCalculator.calculate(cashflowSet, portfolioValue);
         const fundRateStr = (fundRateOfReturn * 100).toFixed(2) + " %"
         fundXirrField.textContent = "Fondo vidutinė metinė grąža (IRR) = " + fundRateStr;
 
-        const dalyvioImokuRateOfReturn = XirrCalculator.calculate(cashflows.map(cashflow => cashflow.dalyvioImoka), portfolioValue);
+        const dalyvioImokuRateOfReturn = XirrCalculator.calculate(new CashFlowSet(cashflowSet.cashflows.map(cashflow => cashflow.dalyvioImoka)), portfolioValue);
         const dalyvioImokuStr = (dalyvioImokuRateOfReturn * 100).toFixed(2) + " %";
         dalyvioImokuXirrField.textContent = "Vidutinė metinė grąža nuo jūsų įmokų (IRR) = " + dalyvioImokuStr;
 
@@ -52,7 +51,7 @@ function doStuff(cashflows, portfolioValue) {
         let sodrosImokaSum = 0;
         let valstybesPaskataSum = 0;
         let fondoImokaSum = 0;
-        cashflows.forEach(cashflow => {
+        cashflowSet.cashflows.forEach(cashflow => {
             dalyvioImokaSum += cashflow.dalyvioImoka.amount;
             sodrosImokaSum += cashflow.sodrosImoka.amount;
             valstybesPaskataSum += cashflow.valstybesPaskata.amount;
@@ -64,8 +63,8 @@ function doStuff(cashflows, portfolioValue) {
             row.insertCell().textContent = cashflow.sodrosImoka.getAmountDisplayValue();
             row.insertCell().textContent = cashflow.valstybesPaskata.getAmountDisplayValue();
             row.insertCell().textContent = cashflow.getAmountDisplayValue();
-            row.insertCell().textContent = XirrCalculator.calculateWithRate([cashflow], today, fundRateOfReturn).getAmountDisplayValue();
-            row.insertCell().textContent = XirrCalculator.calculateWithRate([cashflow.dalyvioImoka], today, dalyvioImokuRateOfReturn).getAmountDisplayValue();
+            row.insertCell().textContent = XirrCalculator.calculateWithRate(new CashFlowSet([cashflow]), today, fundRateOfReturn).getAmountDisplayValue();
+            row.insertCell().textContent = XirrCalculator.calculateWithRate(new CashFlowSet([cashflow.dalyvioImoka]), today, dalyvioImokuRateOfReturn).getAmountDisplayValue();
         });
 
         const sumRow = document.createElement('tr');
@@ -76,7 +75,7 @@ function doStuff(cashflows, portfolioValue) {
         sumRow.insertCell().textContent = new CashFlowEntry(today, sodrosImokaSum, Currency.EUR).getAmountDisplayValue();
         sumRow.insertCell().textContent = new CashFlowEntry(today, valstybesPaskataSum, Currency.EUR).getAmountDisplayValue();
         sumRow.insertCell().textContent = new CashFlowEntry(today, fondoImokaSum, Currency.EUR).getAmountDisplayValue();
-        sumRow.insertCell().textContent = sumRow.insertCell().textContent = XirrCalculator.calculateWithRate(cashflows, today, fundRateOfReturn).getAmountDisplayValue();
+        sumRow.insertCell().textContent = sumRow.insertCell().textContent = XirrCalculator.calculateWithRate(cashflowSet, today, fundRateOfReturn).getAmountDisplayValue();
         calcError.classList.add("d-none");
     } catch (exception) {
         calcError.textContent = exception;
@@ -84,7 +83,7 @@ function doStuff(cashflows, portfolioValue) {
     }
 }
 
-let portfolioValue = null, cashflows = null;
+let portfolioValue = null, cashflowSet = null;
 portfolioValueInput.addEventListener('change', async (event) => {
     try {
         portfolioValue = portfolioValueInput.getCashFlowEntry();
@@ -92,7 +91,7 @@ portfolioValueInput.addEventListener('change', async (event) => {
             throw new Error(`Reikšmė turi būti tarp (0; ${Number.MAX_VALUE}) €!`);
         portfolioValueInput.clearError();
 
-        doStuff(cashflows, portfolioValue);
+        doStuff(cashflowSet, portfolioValue);
     } catch (exception) {
         portfolioValueInput.showError(exception);
     }
@@ -101,10 +100,10 @@ portfolioValueInput.addEventListener('change', async (event) => {
 fileInput.addEventListener('change', async (event) => {
     try {
         const file = fileInput.getFile();
-        cashflows = await Imoka2Pakopa.import(file);
+        cashflowSet = await Imoka2Pakopa.import(file);
         fileInput.clearError();
 
-        doStuff(cashflows, portfolioValue);
+        doStuff(cashflowSet, portfolioValue);
     } catch (exception) {
         fileInput.showError("Nepavyko perskaityti failo struktūros!");
     }
