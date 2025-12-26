@@ -2,35 +2,42 @@ import { CashFlowEntry } from "../cashFlowEntry.js";
 
 export class XirrCalculator {
     static calculate(cashFlowEntries, currentValue) {
-        let rate = 0.1;
-        let rateChange = 0.08;
-        let iterationsLeft = 128;
-        let lastDirection = null;
-        const eps = 1e-7;
+        const eps = 1e-10;
+        const maxIter = 128;
 
-        let portfolioValue;
-        do {
-            portfolioValue = this.calculateWithRate(cashFlowEntries, currentValue.date, rate);
+        const f = (rate) =>
+            this.calculateWithRate(cashFlowEntries, currentValue.date, rate).amount / currentValue.amount - 1;
 
-            if (portfolioValue.amount > currentValue.amount) {
-                if (rate - rateChange < -1) {
-                    rate = -1;
-                    rateChange = 0.08;
-                } else {
-                    rate = rate - rateChange;
-                    if (lastDirection != null)
-                        rateChange *= lastDirection > 0 || rate - rateChange * 2 < -1 ? 0.5 : 2;
-                }
-                lastDirection = -1;
+        let low = -0.9999999999999999;
+        let high = 1;
+        let fLow = f(low);
+        let fHigh = f(high);
+
+        for (let i = 0; i < 2046 && fLow * fHigh > 0; i++) {
+            high *= 2;
+            fHigh = f(high);
+        }
+
+        if (fLow * fHigh > 0 || isNaN(fHigh))
+            throw new Error("Can't find XIRR, because exceeded precision limit of float for annual multiplier which is between -0.9999999999999999 and -1.");
+
+        let mid;
+        for (let i = 0; i < maxIter; i++) {
+            mid = (low + high) / 2;
+            const fMid = f(mid);
+
+            if (Math.abs(fMid) < eps)
+                return mid;
+
+            if (fLow * fMid < 0) {
+                high = mid;
+                fHigh = fMid;
             } else {
-                rate += rateChange;
-                if (lastDirection != null)
-                    rateChange *= lastDirection > 0 ? 2 : 0.5;
-                lastDirection = 1;
+                low = mid;
+                fLow = fMid;
             }
-            iterationsLeft--;
-        } while (iterationsLeft > 0 && Math.abs(portfolioValue.amount - currentValue.amount) > eps);
-        return rate;
+        }
+        return mid;
     }
 
     static calculateWithRate(cashFlowEntries, date, rate) {
