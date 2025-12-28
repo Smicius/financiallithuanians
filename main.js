@@ -1,7 +1,7 @@
 import { Imoka2Pakopa } from "./js/parsers/sodra/imoka2Pakopa.js";
 import { XirrCalculator } from "./js/calculators/xirrCalculator.js";
 import { CashFlowEntry } from "./js/cashFlowEntry.js";
-import { CashFlowSet } from '../js/cashFlowSet.js';
+import { CashFlowSet } from './js/cashFlowSet.js';
 import { Currency } from "./js/currency.js";
 
 const portfolioValueInput = document.getElementById('currentPortfolio');
